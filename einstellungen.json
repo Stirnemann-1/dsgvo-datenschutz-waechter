@@ -1,0 +1,50 @@
+{
+  "_hinweis": "Nach Änderungen im Menü (Schild-Symbol) «Einstellungen neu laden» wählen. Schlüssel mit _ sind nur Erklärungen.",
+
+  "_kategorien": "true = wird ersetzt, false = bleibt stehen",
+  "kategorien": {
+    "NAME": true,
+    "EMAIL": true,
+    "TELEFON": true,
+    "IBAN": true,
+    "AHV": true,
+    "KREDITKARTE": true,
+    "ADRESSE": true,
+    "PLZ_ORT": true,
+    "GEBURTSDATUM": true,
+    "IP": true,
+    "PROFIL_URL": true,
+    "KENNZEICHEN": true,
+    "ORGANISATION": false,
+    "ORT": false,
+    "DATUM": false
+  },
+
+  "_vornamen_einzeln_ersetzen": "Auch einzelne Vornamen wie in «Hallo Anna» ersetzen",
+  "vornamen_einzeln_ersetzen": true,
+
+  "_immer_ersetzen": "Eigene Begriffe, z.B. Kunden- oder Projektnamen. Die Kategorie wird zum Platzhalter: [KUNDE_1]",
+  "immer_ersetzen": {
+    "KUNDE": [],
+    "NAME": []
+  },
+
+  "_nie_ersetzen": "Wörter, die fälschlich erkannt werden und stehen bleiben sollen",
+  "nie_ersetzen": [],
+
+  "_ausgenommene_apps": "Bundle-IDs von Apps, in denen Kopieren nichts verändert, z.B. com.apple.Terminal oder com.microsoft.Word",
+  "ausgenommene_apps": [],
+
+  "benachrichtigungen": true,
+  "warnung_besonders_schuetzenswert": true,
+
+  "_tastenkuerzel": "Kopierten Text mit Platzhaltern mit den Originalen einfügen. Zusatztasten: ctrl, alt, shift, cmd (ctrl oder cmd muss dabei sein). \"\" = aus",
+  "tastenkuerzel_mit_originalen_einfuegen": "ctrl+alt+v",
+  "_nach_einfuegen": "Nach dem Einfügen liegt wieder die Version mit Platzhaltern in der Zwischenablage",
+  "nach_einfuegen_platzhalter_wiederherstellen": true,
+
+  "_namenserkennung": "Apples eingebaute Namenserkennung (läuft auf dem Mac, keine Cloud)",
+  "namenserkennung_apple": true,
+
+  "max_textlaenge": 200000
+}

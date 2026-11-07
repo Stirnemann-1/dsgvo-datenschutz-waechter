@@ -1,0 +1,12 @@
+# Build-Ergebnisse
+.build/
+build/
+build.log
+codesign.log
+*.xcodeproj/
+.swiftpm/
+DerivedData/
+
+# macOS
+.DS_Store
+._*
