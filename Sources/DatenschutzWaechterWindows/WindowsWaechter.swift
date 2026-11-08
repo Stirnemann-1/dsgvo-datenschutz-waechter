@@ -130,7 +130,7 @@ final class WindowsWaechter {
         }
         app.einrichten()
         var nachricht = MSG()
-        while GetMessageW(&nachricht, nil, 0, 0).boolValue {
+        while GetMessageW(&nachricht, nil, 0, 0) {
             TranslateMessage(&nachricht)
             DispatchMessageW(&nachricht)
         }
@@ -241,7 +241,7 @@ final class WindowsWaechter {
         daten.uCallbackMessage = WM_TRAY
         daten.hIcon = symbolBild()
         inFeld(&daten.szTip, tooltip())
-        return Shell_NotifyIconW(DWORD(NIM_ADD), &daten).boolValue
+        return Shell_NotifyIconW(DWORD(NIM_ADD), &daten)
     }
 
     private func symbolAktualisieren() {
@@ -372,14 +372,14 @@ final class WindowsWaechter {
 
     private func oeffnen() -> Bool {
         for _ in 0..<10 {
-            if OpenClipboard(fenster).boolValue { return true }
+            if OpenClipboard(fenster) { return true }
             Sleep(15) // ein anderes Programm hält die Zwischenablage gerade offen
         }
         return false
     }
 
     private func lesen() -> String? {
-        guard IsClipboardFormatAvailable(UINT(CF_UNICODETEXT)).boolValue, oeffnen() else { return nil }
+        guard IsClipboardFormatAvailable(UINT(CF_UNICODETEXT)), oeffnen() else { return nil }
         defer { _ = CloseClipboard() }
         guard let griff = GetClipboardData(UINT(CF_UNICODETEXT)), let zeiger = GlobalLock(griff) else { return nil }
         defer { _ = GlobalUnlock(griff) }
@@ -430,7 +430,7 @@ final class WindowsWaechter {
         defer { _ = CloseHandle(prozess) }
         var puffer = [WCHAR](repeating: 0, count: 1024)
         var laenge = DWORD(puffer.count)
-        guard QueryFullProcessImageNameW(prozess, 0, &puffer, &laenge).boolValue else { return (pid, nil) }
+        guard QueryFullProcessImageNameW(prozess, 0, &puffer, &laenge) else { return (pid, nil) }
         let pfad = String(decoding: puffer[0..<Int(laenge)], as: UTF16.self)
         return (pid, pfad.split(separator: "\\").last.map(String.init))
     }
@@ -438,8 +438,8 @@ final class WindowsWaechter {
     private func zwischenablageGeaendert() {
         let sequenz = GetClipboardSequenceNumber()
         guard aktiv, sequenz != eigeneSequenz else { return }
-        if IsClipboardFormatAvailable(UINT(CF_HDROP)).boolValue { return } // kopierte Dateien
-        if ausschlussFormate.contains(where: { IsClipboardFormatAvailable($0).boolValue }) { return }
+        if IsClipboardFormatAvailable(UINT(CF_HDROP)) { return } // kopierte Dateien
+        if ausschlussFormate.contains(where: { IsClipboardFormatAvailable($0) }) { return }
         let vorne = vordergrund()
         if vorne.pid == GetCurrentProcessId() { return } // z.B. aus der Zuordnungstabelle kopiert
         if let exe = vorne.exe,
@@ -578,7 +578,7 @@ final class WindowsWaechter {
         guard !kuerzel.isEmpty else { return }
         do {
             let k = try KuerzelLeser.lesen(kuerzel)
-            if RegisterHotKey(fenster, HOTKEY_ID, UINT(k.windowsModifier), UINT(k.windowsTaste)).boolValue {
+            if RegisterHotKey(fenster, HOTKEY_ID, UINT(k.windowsModifier), UINT(k.windowsTaste)) {
                 kuerzelAnzeige = k.anzeigeWindows
                 log("Tastenkürzel \(k.anzeigeWindows) aktiv")
             } else {
@@ -679,7 +679,7 @@ final class WindowsWaechter {
 
         do {
             let k = try KuerzelLeser.lesen(einstellungen.tastenkuerzel)
-            let ok = RegisterHotKey(fenster, HOTKEY_ID, UINT(k.windowsModifier), UINT(k.windowsTaste)).boolValue
+            let ok = RegisterHotKey(fenster, HOTKEY_ID, UINT(k.windowsModifier), UINT(k.windowsTaste))
             bericht.append("Tastenkürzel \(k.anzeigeWindows): " + (ok ? "ok" : "nicht registriert"))
             if ok { _ = UnregisterHotKey(fenster, HOTKEY_ID) }
         } catch {
