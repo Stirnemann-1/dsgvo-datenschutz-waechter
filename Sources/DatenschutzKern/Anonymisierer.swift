@@ -386,9 +386,8 @@ public final class Anonymisierer {
         namen = namen.filter { !($0.1.woerter.count == 1 && teile.contains($0.1)) }
 
         // Nummern in Lesereihenfolge vergeben
-        let ns = text as NSString
         func ersteStelle(_ name: String) -> Int {
-            let stellen = ([name] + name.woerter).map { ns.range(of: $0).location }.filter { $0 != NSNotFound }
+            let stellen = ([name] + name.woerter).compactMap { text.range(of: $0)?.lowerBound.utf16Offset(in: text) }
             return stellen.min() ?? laenge
         }
         let reihenfolge = namen.enumerated().map { eintrag in
@@ -429,11 +428,7 @@ public final class Anonymisierer {
             if zaehlung[k] == nil { katReihenfolge.append(k) }
             zaehlung[k, default: 0] += 1
         }
-        let neu = NSMutableString(string: text)
-        for (bereich, platzhalter) in ersetzungen.reversed() {
-            neu.replaceCharacters(in: bereich, with: platzhalter)
-        }
-        let neuerText = neu as String
+        let neuerText = text.ersetzt(ersetzungen)
 
         let anzahl = katReihenfolge.enumerated()
             .map { (index: $0.offset, kategorie: $0.element, anzahl: zaehlung[$0.element] ?? 0) }
@@ -466,15 +461,13 @@ public final class Anonymisierer {
 
     /// Ersetzt bekannte Platzhalter wieder durch die Originale.
     public func zurueckuebersetzen(_ text: String) -> (text: String, anzahl: Int) {
-        let neu = NSMutableString(string: text)
-        var anzahl = 0
-        for m in M.platzhalter.alle(text).reversed() {
+        var ersetzungen: [(NSRange, String)] = []
+        for m in M.platzhalter.alle(text) {
             if let original = zuordnung.original(text.teil(m.range)) {
-                neu.replaceCharacters(in: m.range, with: original)
-                anzahl += 1
+                ersetzungen.append((m.range, original))
             }
         }
-        return (neu as String, anzahl)
+        return (text.ersetzt(ersetzungen), ersetzungen.count)
     }
 
     // MARK: Prüfziffern

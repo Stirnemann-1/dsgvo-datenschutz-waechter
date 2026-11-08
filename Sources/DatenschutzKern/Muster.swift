@@ -1,7 +1,8 @@
 // DSGVO Datenschutz Wächter – Wortlisten und Suchmuster
 //
-// Alle Positionen werden in UTF-16-Einheiten (NSString/NSRange) gerechnet,
-// damit NSRegularExpression und Apples Namenserkennung zusammenpassen.
+// Alle Positionen werden in UTF-16-Einheiten (NSRange) gerechnet, damit
+// NSRegularExpression und die Namenserkennung zusammenpassen. Der Kern
+// verwendet nur Foundation-Funktionen, die es auf macOS und Windows gibt.
 
 import Foundation
 
@@ -42,8 +43,8 @@ public final class RE {
 extension String {
     /// Teilstück nach UTF-16-Bereich
     func teil(_ bereich: NSRange) -> String {
-        guard bereich.location != NSNotFound else { return "" }
-        return (self as NSString).substring(with: bereich)
+        guard bereich.location != NSNotFound, let r = Range(bereich, in: self) else { return "" }
+        return String(self[r])
     }
 
     /// Teilstück von/bis (UTF-16)
@@ -51,7 +52,26 @@ extension String {
         let n = utf16.count
         let a = max(0, min(von, n))
         let b = max(a, min(bis, n))
-        return (self as NSString).substring(with: NSRange(location: a, length: b - a))
+        return teil(NSRange(location: a, length: b - a))
+    }
+
+    /// UTF-16-Position -> String.Index (nil, wenn ausserhalb)
+    func index(utf16 position: Int) -> String.Index? {
+        utf16.index(utf16.startIndex, offsetBy: position, limitedBy: utf16.endIndex)
+    }
+
+    /// Ersetzt mehrere Bereiche (aufsteigend sortiert, ohne Überlappung)
+    func ersetzt(_ ersetzungen: [(NSRange, String)]) -> String {
+        var ergebnis = ""
+        var pos = startIndex
+        for (bereich, neu) in ersetzungen {
+            guard let r = Range(bereich, in: self), r.lowerBound >= pos else { continue }
+            ergebnis += self[pos..<r.lowerBound]
+            ergebnis += neu
+            pos = r.upperBound
+        }
+        ergebnis += self[pos...]
+        return ergebnis
     }
 
     /// Wie Python str.split(): an Leerraum trennen, leere Teile weglassen
@@ -65,10 +85,8 @@ extension String {
 
     /// Erste Fundstelle (UTF-16) oder nil
     func stelle(von suche: String, ab: Int = 0) -> Int? {
-        let ns = self as NSString
-        guard ab <= ns.length else { return nil }
-        let r = ns.range(of: suche, options: [], range: NSRange(location: ab, length: ns.length - ab))
-        return r.location == NSNotFound ? nil : r.location
+        guard let start = index(utf16: ab), let r = range(of: suche, range: start..<endIndex) else { return nil }
+        return r.lowerBound.utf16Offset(in: self)
     }
 
     /// Wie Python str.isupper()
@@ -254,7 +272,7 @@ enum M {
     static let titelName = RE(#"\b\#(titel)[ \t]+(?:(?:Dr|Prof|lic|med|iur|phil|Dipl|Ing)\.[ \t]*)*(\#(namenswort)(?:[ \t]+(?:(?:von|van|de|di|da|del|zu)[ \t]+)?\#(namenswort))?)"#)
     /// Gruppe 1 = Vorname, Gruppe 2 = Nachname
     static let vornameNachname = RE(#"\b(\#(namenswort))[ \t]+((?:(?:von|van|de|di|da|del|zu|dos)[ \t]+)?\#(namenswort))"#)
-    static let anrede = RE(#"(?im)(?:^|(?<=\s))(?:Hallo|Hoi|Hi|Hey|Salü|Sali|Grüezi|Guten\s+(?:Morgen|Tag|Abend)|Liebe[rs]?|Dear|Hello|Bonjour|Salut|Ciao|Buongiorno|Car[ao]|Chère?|Gentile)[ \t]+(?-i:(\#(namenswort)(?:[ \t]+\#(namenswort))?))[ \t]*[,!\n]"#)
+    static let anrede = RE(#"(?im)(?:^|(?<=\s))(?:Hallo|Hoi|Hi|Hey|Salü|Sali|Grüezi|Guten\s+(?:Morgen|Tag|Abend)|Liebe[rs]?|Dear|Hello|Bonjour|Salut|Ciao|Buongiorno|Car[ao]|Chère?|Gentile)[ \t]+(?-i:(\#(namenswort)(?:[ \t]+\#(namenswort))?))[ \t]*[,!\r\n]"#)
     static let gruss = RE(#"(?im)^[ \t]*(?:(?:mit\s+)?(?:freundliche[nr]?|beste[n]?|liebe[n]?|herzliche[n]?|viele|sonnige|schöne|kollegiale|freundschaftliche)\s+)?(?:grüsse[n]?|grüße[n]?|gruss|gruß)\b|^[ \t]*(?:lg|mfg|vg|best regards|kind regards|regards|best|cheers|cordialement|meilleures salutations|salutations distinguées|cordiali saluti|distinti saluti|saluti)\b"#)
     static let signaturZeile = RE(#"^\s*(?:(?:i\.\s?A\.|i\.\s?V\.|p\.\s?p\.)\s*)?(?:\#(titel)\s+)?(\#(namenswort)(?:[ \t]+(?:(?:von|van|de|di|da|del|zu)[ \t]+)?\#(namenswort)){0,3})\s*$"#)
     static let einzelnesWort = RE(#"\b[\#(gross)][\#(klein)]+\b"#)

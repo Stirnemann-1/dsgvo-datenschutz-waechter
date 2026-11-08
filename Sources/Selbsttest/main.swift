@@ -189,6 +189,8 @@ test("Tastenkürzel lesen") {
     pruefe((try KuerzelLeser.lesen("Control + Option + V")).anzeige == "⌃⌥V", "Schreibweise")
     pruefe((try KuerzelLeser.lesen("cmd+shift+v")).anzeige == "⇧⌘V", "cmd+shift")
     pruefe((try KuerzelLeser.lesen("strg+alt+f5")).code == 96, "F5")
+    pruefe(k.windowsTaste == 0x56 && k.windowsModifier == 0x4003 && k.anzeigeWindows == "Strg+Alt+V", "Windows: \(k.windowsTaste) \(k.windowsModifier) \(k.anzeigeWindows)")
+    pruefe((try KuerzelLeser.lesen("ctrl+shift+f5")).windowsTaste == 0x74, "Windows F5")
     for falsch in ["alt+v", "v", "ctrl+ä", "hyper+v"] {
         pruefe((try? KuerzelLeser.lesen(falsch)) == nil, "«\(falsch)» hätte abgelehnt werden sollen")
     }
@@ -235,8 +237,9 @@ let alltag = [
 /// Simuliert eine Namenserkennung, die Wörter am Satzanfang falsch als Namen meldet
 let lauteErkennung: Namenserkenner = { text in
     let muster = RE(#"(?:^|(?<=[.!?]\s)|(?<=\n))([A-ZÄÖÜ][a-zäöü]+)"#)
-    let ns = text as NSString
-    return muster.alle(text).map { (kategorie: "NAME", wert: ns.substring(with: $0.range(at: 1))) }
+    return muster.alle(text).compactMap { m in
+        Range(m.range(at: 1), in: text).map { (kategorie: "NAME", wert: String(text[$0])) }
+    }
 }
 
 test("Pronomen und Rollen bleiben stehen") {
@@ -285,6 +288,13 @@ test("Alltagstext bleibt unverändert") {
     """
     let e = Anonymisierer(namenserkenner: [lauteErkennung]).anonymisieren(text)
     pruefe(e.text == text, e.text)
+}
+
+test("Windows-Zeilenumbrüche (CRLF)") {
+    let text = "Hallo Zoran\r\nDanke für die Offerte.\r\n\r\nLiebe Grüsse\r\nMarco Rossi\r\n"
+    let e = Anonymisierer().anonymisieren(text)
+    for g in ["Zoran", "Marco", "Rossi"] { pruefe(!e.text.contains(g), "«\(g)»: \(e.text)") }
+    pruefe(e.text.contains("Danke für die Offerte.\r\n"), e.text)
 }
 
 print(fehlerGesamt == 0 ? "\nAlle Tests bestanden." : "\n\(fehlerGesamt) Fehler.")

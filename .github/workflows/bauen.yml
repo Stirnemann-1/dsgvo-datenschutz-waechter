@@ -1,0 +1,86 @@
+name: Bauen und testen
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  macos:
+    name: macOS
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Swift-Version
+        run: swift --version
+      - name: Kompilieren
+        run: swift build -c release
+      - name: Selbsttest
+        run: .build/release/Selbsttest
+
+  windows:
+    name: Windows
+    runs-on: windows-latest
+    steps:
+      - uses: compnerd/gha-setup-swift@main
+        with:
+          swift-version: swift-6.2-release
+          swift-build: 6.2-RELEASE
+      - uses: actions/checkout@v4
+      - name: Swift-Version
+        run: swift --version
+      - name: Kompilieren
+        run: swift build -c release --product DatenschutzWaechterWindows
+      - name: Selbsttest
+        run: swift run -c release Selbsttest
+
+      - name: Paket schnüren
+        shell: pwsh
+        run: |
+          $bin = (swift build -c release --show-bin-path).Trim()
+          $ziel = "paket\DSGVO Datenschutz Waechter"
+          New-Item -ItemType Directory -Force $ziel | Out-Null
+          Copy-Item "$bin\DatenschutzWaechterWindows.exe" "$ziel\DSGVO Datenschutz Waechter.exe"
+          Copy-Item einstellungen.json $ziel
+          Copy-Item README-Windows.md "$ziel\LIESMICH.md"
+          # Swift-Laufzeit (DLLs) mitliefern, damit auf dem Ziel-PC nichts installiert werden muss
+          $laufzeit = Split-Path (where.exe swiftCore.dll | Select-Object -First 1)
+          Write-Host "Swift-Laufzeit: $laufzeit"
+          Copy-Item "$laufzeit\*.dll" $ziel
+          foreach ($dll in "vcruntime140.dll", "vcruntime140_1.dll", "msvcp140.dll") {
+            if (Test-Path "C:\Windows\System32\$dll") { Copy-Item "C:\Windows\System32\$dll" $ziel }
+          }
+          Get-ChildItem $ziel | Format-Table Name, Length
+
+      - name: Paket prüfen (ohne installiertes Swift)
+        shell: pwsh
+        run: |
+          $exe = Resolve-Path "paket\DSGVO Datenschutz Waechter\DSGVO Datenschutz Waechter.exe"
+          $bericht = Join-Path $env:RUNNER_TEMP "bericht.txt"
+          $env:PATH = "C:\Windows\System32;C:\Windows"
+          $p = Start-Process -FilePath $exe -ArgumentList "--pruefen", $bericht -Wait -PassThru
+          if (Test-Path $bericht) { Get-Content $bericht }
+          Write-Host "Rückgabewert: $($p.ExitCode)"
+          if ($p.ExitCode -eq 2) { Write-Host "::warning::Zwischenablage auf dem Build-Rechner nicht verfügbar" }
+          elseif ($p.ExitCode -ne 0) { exit 1 }
+
+      - name: Paket hochladen
+        uses: actions/upload-artifact@v4
+        with:
+          name: DSGVO-Datenschutz-Waechter-Windows
+          path: paket
+
+      - name: ZIP für Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: pwsh
+        run: Compress-Archive -Path "paket\DSGVO Datenschutz Waechter" -DestinationPath "DSGVO-Datenschutz-Waechter-Windows.zip"
+
+      - name: Release veröffentlichen
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: DSGVO-Datenschutz-Waechter-Windows.zip
+    permissions:
+      contents: write

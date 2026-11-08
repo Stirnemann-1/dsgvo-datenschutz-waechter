@@ -8,6 +8,7 @@
 // Alles läuft lokal. Die Zuordnung liegt nur im Arbeitsspeicher; Protokoll
 // und Mitteilungen enthalten nie Originalwerte.
 
+#if os(macOS)
 import AppKit
 import DatenschutzKern
 
@@ -399,3 +400,4 @@ final class Waechter: NSObject {
         melden("Einstellungen geladen", "Die neuen Einstellungen sind aktiv.", immer: true)
     }
 }
+#endif

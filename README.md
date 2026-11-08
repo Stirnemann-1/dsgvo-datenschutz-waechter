@@ -1,4 +1,13 @@
-# 🛡 DSGVO Datenschutz Wächter für macOS (Swift-Version)
+# 🛡 DSGVO Datenschutz Wächter (macOS und Windows)
+
+[![Bauen und testen](https://github.com/Stirnemann-1/dsgvo-datenschutz-waechter/actions/workflows/bauen.yml/badge.svg)](https://github.com/Stirnemann-1/dsgvo-datenschutz-waechter/actions/workflows/bauen.yml)
+
+> **Windows:** Anleitung in [README-Windows.md](README-Windows.md). Das fertige
+> Windows-Paket gibt es unter [Releases](https://github.com/Stirnemann-1/dsgvo-datenschutz-waechter/releases)
+> bzw. im Reiter «Actions».
+>
+> Diese Seite beschreibt die **macOS-Version**.
+
 
 Native Menüleisten-App: überwacht die Zwischenablage, ersetzt beim Kopieren
 (⌘C) Personendaten durch nummerierte Platzhalter und fügt sie mit **⌃⌥V**
@@ -33,7 +42,7 @@ Das Skript
 - prüft, ob Apples Entwicklerwerkzeuge da sind (sonst öffnet sich das
   Installationsfenster; danach `bash bauen.sh` nochmals starten). Xcode
   selbst ist nicht nötig.
-- kompiliert die App und lässt den **Selbsttest** laufen (26 Testfälle).
+- kompiliert die App und lässt den **Selbsttest** laufen (27 Testfälle).
   Schlägt etwas fehl, wird nichts installiert.
 - legt die App nach `~/Applications/DSGVO Datenschutz Wächter.app`
 - **ersetzt die Python-Version**, falls vorhanden (Einstellungen bleiben)
@@ -136,8 +145,10 @@ bash ~/Downloads/datenschutz-waechter-swift/deinstallieren.sh
 
 ```
 Package.swift
-Sources/DatenschutzKern/     Erkennung, Platzhalter, Einstellungen (ohne UI)
-Sources/DatenschutzWaechter/ Menüleisten-App, Zwischenablage, ⌃⌥V, Mitteilungen
-Sources/Selbsttest/          Prüfungen, laufen bei jedem Bauen
+Sources/DatenschutzKern/            Erkennung, Platzhalter, Einstellungen (macOS + Windows)
+Sources/DatenschutzWaechter/        Menüleisten-App für macOS, ⌃⌥V, Mitteilungen
+Sources/DatenschutzWaechterWindows/ Infobereich-App für Windows, Strg+Alt+V
+Sources/Selbsttest/                 Prüfungen, laufen bei jedem Bauen
+.github/workflows/bauen.yml         baut und testet automatisch auf macOS und Windows
 bauen.sh / deinstallieren.sh
 ```

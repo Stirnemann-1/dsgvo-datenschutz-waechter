@@ -1,6 +1,7 @@
 // DSGVO Datenschutz Wächter – Anbindung an macOS:
 // Tastenkürzel (Carbon), Einfügen (CGEvent), Namenserkennung, Mitteilungen, Protokoll
 
+#if os(macOS)
 import AppKit
 import ApplicationServices
 import Carbon
@@ -152,3 +153,4 @@ final class Mitteilungen {
         "\"" + s.replacingOccurrences(of: "\\", with: "\\\\").replacingOccurrences(of: "\"", with: "\\\"") + "\""
     }
 }
+#endif
