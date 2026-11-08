@@ -3,7 +3,6 @@ name: Bauen und testen
 on:
   push:
     branches: [main]
-    tags: ["v*"]
   pull_request:
   workflow_dispatch:
 
@@ -72,15 +71,25 @@ jobs:
           name: DSGVO-Datenschutz-Waechter-Windows
           path: paket
 
-      - name: ZIP für Release
-        if: startsWith(github.ref, 'refs/tags/v')
+      - name: Release veröffentlichen (einmal pro Version)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         shell: pwsh
-        run: Compress-Archive -Path "paket\DSGVO Datenschutz Waechter" -DestinationPath "DSGVO-Datenschutz-Waechter-Windows.zip"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $version = (Get-Content VERSION).Trim()
+          $tag = "v$version"
+          gh release view $tag --repo $env:GITHUB_REPOSITORY *> $null
+          if ($LASTEXITCODE -eq 0) { Write-Host "Release $tag existiert bereits – für ein neues Release VERSION erhöhen."; exit 0 }
+          Compress-Archive -Path "paket\DSGVO Datenschutz Waechter" -DestinationPath "DSGVO-Datenschutz-Waechter-Windows.zip"
+          $notizen = @"
+          **Windows:** ``DSGVO-Datenschutz-Waechter-Windows.zip`` herunterladen, entpacken, Ordner an einen festen Ort verschieben und ``DSGVO Datenschutz Waechter.exe`` starten. Meldet Windows «Der Computer wurde durch Windows geschützt»: «Weitere Informationen» → «Trotzdem ausführen». Anleitung: README-Windows.md
 
-      - name: Release veröffentlichen
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v2
-        with:
-          files: DSGVO-Datenschutz-Waechter-Windows.zip
+          **macOS:** Quellcode herunterladen und ``bash bauen.sh`` ausführen. Anleitung: README.md
+
+          Ersetzt beim Kopieren Namen, Adressen, E-Mails usw. durch Platzhalter und fügt sie mit Strg+Alt+V bzw. ⌃⌥V wieder ein. Läuft lokal, ohne Cloud.
+          "@
+          gh release create $tag "DSGVO-Datenschutz-Waechter-Windows.zip" --repo $env:GITHUB_REPOSITORY --target $env:GITHUB_SHA --title "DSGVO Datenschutz Wächter $version" --notes $notizen
+          exit 0
     permissions:
       contents: write
