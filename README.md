@@ -1,6 +1,7 @@
 # 🛡 DSGVO Datenschutz Wächter (macOS und Windows)
 
 [![Bauen und testen](https://github.com/Stirnemann-1/dsgvo-datenschutz-waechter/actions/workflows/bauen.yml/badge.svg)](https://github.com/Stirnemann-1/dsgvo-datenschutz-waechter/actions/workflows/bauen.yml)
+[![Lizenz: MIT](https://img.shields.io/badge/Lizenz-MIT-blue.svg)](LICENSE)
 
 > **Windows:** Anleitung in [README-Windows.md](README-Windows.md). Das fertige
 > Windows-Paket gibt es unter [Releases](https://github.com/Stirnemann-1/dsgvo-datenschutz-waechter/releases)
@@ -152,3 +153,10 @@ Sources/Selbsttest/                 Prüfungen, laufen bei jedem Bauen
 .github/workflows/bauen.yml         baut und testet automatisch auf macOS und Windows
 bauen.sh / deinstallieren.sh
 ```
+
+## Lizenz
+
+Veröffentlicht unter der [MIT-Lizenz](LICENSE) – © 2026 Urs Stirnemann.
+Die App darf frei genutzt, verändert und weitergegeben werden, auch
+kommerziell, solange der Copyright- und Lizenzhinweis erhalten bleibt.
+Sie wird ohne Gewähr bereitgestellt und ersetzt keine rechtliche Prüfung.

@@ -44,6 +44,7 @@ jobs:
           Copy-Item "$bin\DatenschutzWaechterWindows.exe" "$ziel\DSGVO Datenschutz Waechter.exe"
           Copy-Item einstellungen.json $ziel
           Copy-Item README-Windows.md "$ziel\LIESMICH.md"
+          Copy-Item LICENSE "$ziel\LIZENZ.txt"
           # Swift-Laufzeit (DLLs) mitliefern, damit auf dem Ziel-PC nichts installiert werden muss
           $laufzeit = Split-Path (where.exe swiftCore.dll | Select-Object -First 1)
           Write-Host "Swift-Laufzeit: $laufzeit"

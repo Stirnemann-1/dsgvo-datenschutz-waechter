@@ -95,3 +95,8 @@ swift run -c release Selbsttest
 
 Fertige Pakete baut GitHub Actions bei jedem Hochladen automatisch
 (Reiter «Actions» → neuester Lauf → «DSGVO-Datenschutz-Waechter-Windows»).
+
+## Lizenz
+
+Veröffentlicht unter der MIT-Lizenz (Datei `LIZENZ.txt` im Paket bzw.
+[LICENSE](LICENSE) im Repository) – © 2026 Urs Stirnemann. Ohne Gewähr.
