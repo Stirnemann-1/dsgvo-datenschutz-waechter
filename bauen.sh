@@ -7,6 +7,7 @@ cd "$(dirname "$0")"
 NAME="DSGVO Datenschutz Wächter"
 ANZEIGE="DSGVO Datenschutz Wächter"
 BUNDLE_ID="ch.datenschutz-waechter"
+VERSION_NR="$(tr -d '[:space:]' < VERSION)"
 LABEL="ch.datenschutz-waechter"
 APP="$HOME/Applications/$NAME.app"
 SUPPORT="$HOME/Library/Application Support/Datenschutz-Waechter"
@@ -53,6 +54,7 @@ rm -rf "$BAU/paket"
 mkdir -p "$PAKET/Contents/MacOS" "$PAKET/Contents/Resources"
 cp "$BIN/DatenschutzWaechter" "$PAKET/Contents/MacOS/DatenschutzWaechter"
 cp einstellungen.json "$PAKET/Contents/Resources/einstellungen.json"
+cp LICENSE "$PAKET/Contents/Resources/LICENSE.txt"
 cat > "$PAKET/Contents/Info.plist" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -63,11 +65,11 @@ cat > "$PAKET/Contents/Info.plist" <<EOF
   <key>CFBundleDisplayName</key><string>$ANZEIGE</string>
   <key>CFBundleExecutable</key><string>DatenschutzWaechter</string>
   <key>CFBundlePackageType</key><string>APPL</string>
-  <key>CFBundleShortVersionString</key><string>2.0</string>
-  <key>CFBundleVersion</key><string>2</string>
+  <key>CFBundleShortVersionString</key><string>$VERSION_NR</string>
+  <key>CFBundleVersion</key><string>$VERSION_NR</string>
   <key>LSMinimumSystemVersion</key><string>13.0</string>
   <key>LSUIElement</key><true/>
-  <key>NSHumanReadableCopyright</key><string>Läuft lokal, ohne Cloud.</string>
+  <key>NSHumanReadableCopyright</key><string>© 2026 Urs Stirnemann · MIT-Lizenz · läuft lokal, ohne Cloud.</string>
 </dict>
 </plist>
 EOF
