@@ -96,7 +96,21 @@ swift run -c release Selbsttest
 Fertige Pakete baut GitHub Actions bei jedem Hochladen automatisch
 (Reiter «Actions» → neuester Lauf → «DSGVO-Datenschutz-Waechter-Windows»).
 
+## Offizielle Quelle und Echtheit prüfen
+
+Nur hier herunterladen: **https://github.com/Stirnemann-1/dsgvo-datenschutz-waechter/releases**. Kopien von anderen Seiten
+können verändert sein. Den SHA-256-Fingerabdruck der ZIP-Datei finden Sie
+in den Release-Notizen und in `SHA256SUMS.txt`. Prüfen in PowerShell:
+
+```powershell
+Get-FileHash .\DSGVO-Datenschutz-Waechter-Windows.zip -Algorithm SHA256
+```
+
+Die App arbeitet ausschliesslich lokal und baut keine Internetverbindung auf.
+
 ## Lizenz
 
-Veröffentlicht unter der MIT-Lizenz (Datei `LIZENZ.txt` im Paket bzw.
-[LICENSE](LICENSE) im Repository) – © 2026 Urs Stirnemann. Ohne Gewähr.
+Apache License 2.0 – © 2026 Urs Stirnemann. Im Paket als `LIZENZ.txt` und
+`NOTICE.txt`, im Repository als [LICENSE](LICENSE) und [NOTICE](NOTICE).
+Der Name «DSGVO Datenschutz Wächter» darf nicht für veränderte Fassungen
+verwendet werden. Ohne Gewähr.

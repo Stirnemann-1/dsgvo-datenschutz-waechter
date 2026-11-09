@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: Apache-2.0
+// Copyright 2026 Urs Stirnemann – siehe LICENSE und NOTICE
+
 // DSGVO Datenschutz Wächter – Windows-App (Symbol im Infobereich)
 //
 // Überwacht die Zwischenablage. Sobald Text kopiert wird (Strg+C), werden

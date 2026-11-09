@@ -1,13 +1,36 @@
 # 🛡 DSGVO Datenschutz Wächter (macOS und Windows)
 
 [![Bauen und testen](https://github.com/Stirnemann-1/dsgvo-datenschutz-waechter/actions/workflows/bauen.yml/badge.svg)](https://github.com/Stirnemann-1/dsgvo-datenschutz-waechter/actions/workflows/bauen.yml)
-[![Lizenz: MIT](https://img.shields.io/badge/Lizenz-MIT-blue.svg)](LICENSE)
+[![Lizenz: Apache 2.0](https://img.shields.io/badge/Lizenz-Apache%202.0-blue.svg)](LICENSE)
 
 > **Windows:** Anleitung in [README-Windows.md](README-Windows.md). Das fertige
 > Windows-Paket gibt es unter [Releases](https://github.com/Stirnemann-1/dsgvo-datenschutz-waechter/releases)
 > bzw. im Reiter «Actions».
 >
 > Diese Seite beschreibt die **macOS-Version**.
+
+## Offizielle Quelle und Echtheit prüfen
+
+Der DSGVO Datenschutz Wächter sieht alles, was Sie kopieren. Laden Sie ihn
+deshalb **nur aus diesem Repository** herunter:
+**https://github.com/Stirnemann-1/dsgvo-datenschutz-waechter/releases**. Kopien von anderen Seiten können verändert sein.
+
+Zu jedem Release gehört die Datei `SHA256SUMS.txt` mit dem
+SHA-256-Fingerabdruck des Downloads; derselbe Wert steht auch in den
+Release-Notizen. Stimmt der Wert Ihrer Datei damit überein, ist sie
+unverändert:
+
+```bash
+# macOS / Linux
+shasum -a 256 DSGVO-Datenschutz-Waechter-Windows.zip
+```
+```powershell
+# Windows (PowerShell)
+Get-FileHash .\DSGVO-Datenschutz-Waechter-Windows.zip -Algorithm SHA256
+```
+
+Die App arbeitet ausschliesslich lokal und baut keine Internetverbindung
+auf. Eine Fassung, die Daten ins Netz sendet, ist nicht das Original.
 
 
 Native Menüleisten-App: überwacht die Zwischenablage, ersetzt beim Kopieren
@@ -156,7 +179,12 @@ bauen.sh / deinstallieren.sh
 
 ## Lizenz
 
-Veröffentlicht unter der [MIT-Lizenz](LICENSE) – © 2026 Urs Stirnemann.
+Veröffentlicht unter der [Apache License 2.0](LICENSE) – © 2026 Urs Stirnemann.
+Siehe auch [NOTICE](NOTICE).
+
 Die App darf frei genutzt, verändert und weitergegeben werden, auch
-kommerziell, solange der Copyright- und Lizenzhinweis erhalten bleibt.
-Sie wird ohne Gewähr bereitgestellt und ersetzt keine rechtliche Prüfung.
+kommerziell. Bedingungen: Lizenz- und NOTICE-Hinweise bleiben erhalten,
+veränderte Dateien werden als verändert gekennzeichnet, und der Name
+«DSGVO Datenschutz Wächter» darf nicht für eigene Fassungen verwendet werden
+(erlaubt ist «basiert auf DSGVO Datenschutz Wächter»). Bereitgestellt ohne
+Gewähr; die App ersetzt keine rechtliche Prüfung.

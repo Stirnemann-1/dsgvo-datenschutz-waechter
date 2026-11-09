@@ -45,6 +45,7 @@ jobs:
           Copy-Item einstellungen.json $ziel
           Copy-Item README-Windows.md "$ziel\LIESMICH.md"
           Copy-Item LICENSE "$ziel\LIZENZ.txt"
+          Copy-Item NOTICE "$ziel\NOTICE.txt"
           # Swift-Laufzeit (DLLs) mitliefern, damit auf dem Ziel-PC nichts installiert werden muss
           $laufzeit = Split-Path (where.exe swiftCore.dll | Select-Object -First 1)
           Write-Host "Swift-Laufzeit: $laufzeit"
@@ -83,14 +84,25 @@ jobs:
           gh release view $tag --repo $env:GITHUB_REPOSITORY *> $null
           if ($LASTEXITCODE -eq 0) { Write-Host "Release $tag existiert bereits – für ein neues Release VERSION erhöhen."; exit 0 }
           Compress-Archive -Path "paket\DSGVO Datenschutz Waechter" -DestinationPath "DSGVO-Datenschutz-Waechter-Windows.zip"
+          $hash = (Get-FileHash "DSGVO-Datenschutz-Waechter-Windows.zip" -Algorithm SHA256).Hash.ToLower()
+          [IO.File]::WriteAllText("SHA256SUMS.txt", "$hash  DSGVO-Datenschutz-Waechter-Windows.zip`n")
+          Write-Host "SHA-256: $hash"
           $notizen = @"
           **Windows:** ``DSGVO-Datenschutz-Waechter-Windows.zip`` herunterladen, entpacken, Ordner an einen festen Ort verschieben und ``DSGVO Datenschutz Waechter.exe`` starten. Meldet Windows «Der Computer wurde durch Windows geschützt»: «Weitere Informationen» → «Trotzdem ausführen». Anleitung: README-Windows.md
 
           **macOS:** Quellcode herunterladen und ``bash bauen.sh`` ausführen. Anleitung: README.md
 
           Ersetzt beim Kopieren Namen, Adressen, E-Mails usw. durch Platzhalter und fügt sie mit Strg+Alt+V bzw. ⌃⌥V wieder ein. Läuft lokal, ohne Cloud.
+
+          **Echtheit prüfen (SHA-256)** – ``DSGVO-Datenschutz-Waechter-Windows.zip``:
+          ``$hash``
+          Windows (PowerShell): ``Get-FileHash .\DSGVO-Datenschutz-Waechter-Windows.zip -Algorithm SHA256`` · macOS/Linux: ``shasum -a 256 DSGVO-Datenschutz-Waechter-Windows.zip``
+
+          **Offizielle Quelle:** nur hier herunterladen – https://github.com/Stirnemann-1/dsgvo-datenschutz-waechter/releases. Kopien von anderen Seiten können verändert sein.
+
+          Lizenz: Apache 2.0 (siehe LICENSE und NOTICE).
           "@
-          gh release create $tag "DSGVO-Datenschutz-Waechter-Windows.zip" --repo $env:GITHUB_REPOSITORY --target $env:GITHUB_SHA --title "DSGVO Datenschutz Wächter $version" --notes $notizen
+          gh release create $tag "DSGVO-Datenschutz-Waechter-Windows.zip" "SHA256SUMS.txt" --repo $env:GITHUB_REPOSITORY --target $env:GITHUB_SHA --title "DSGVO Datenschutz Wächter $version" --notes $notizen
           exit 0
     permissions:
       contents: write

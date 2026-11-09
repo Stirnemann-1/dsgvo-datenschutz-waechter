@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: Apache-2.0
+// Copyright 2026 Urs Stirnemann – siehe LICENSE und NOTICE
+
 // DSGVO Datenschutz Wächter – Selbsttest
 // Läuft beim Bauen (bauen.sh). Gleiche Fälle wie die Tests der Python-Version.
 

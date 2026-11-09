@@ -55,6 +55,7 @@ mkdir -p "$PAKET/Contents/MacOS" "$PAKET/Contents/Resources"
 cp "$BIN/DatenschutzWaechter" "$PAKET/Contents/MacOS/DatenschutzWaechter"
 cp einstellungen.json "$PAKET/Contents/Resources/einstellungen.json"
 cp LICENSE "$PAKET/Contents/Resources/LICENSE.txt"
+cp NOTICE "$PAKET/Contents/Resources/NOTICE.txt"
 cat > "$PAKET/Contents/Info.plist" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -69,7 +70,7 @@ cat > "$PAKET/Contents/Info.plist" <<EOF
   <key>CFBundleVersion</key><string>$VERSION_NR</string>
   <key>LSMinimumSystemVersion</key><string>13.0</string>
   <key>LSUIElement</key><true/>
-  <key>NSHumanReadableCopyright</key><string>© 2026 Urs Stirnemann · MIT-Lizenz · läuft lokal, ohne Cloud.</string>
+  <key>NSHumanReadableCopyright</key><string>© 2026 Urs Stirnemann · Apache-Lizenz 2.0 · läuft lokal, ohne Cloud.</string>
 </dict>
 </plist>
 EOF

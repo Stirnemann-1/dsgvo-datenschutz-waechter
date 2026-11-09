@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: Apache-2.0
+// Copyright 2026 Urs Stirnemann – siehe LICENSE und NOTICE
+
 // DSGVO Datenschutz Wächter – Wortlisten und Suchmuster
 //
 // Alle Positionen werden in UTF-16-Einheiten (NSRange) gerechnet, damit
